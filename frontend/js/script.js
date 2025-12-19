@@ -1,137 +1,100 @@
-// ================= LOGIN ELEMENTS =================
+// ================= LOGIN =================
 const login = document.querySelector(".login")
-const loginForm = login.querySelector(".login__form")
-const loginInput = login.querySelector(".login__input")
+const loginForm = document.querySelector(".login__form")
+const loginInput = document.querySelector(".login__input")
 
-// ================= CHAT ELEMENTS =================
+// ================= CHAT =================
 const chat = document.querySelector(".chat")
 const chatForm = chat.querySelector(".chat__form")
-const chatInput = chat.querySelector(".chat__input")
-const chatMessages = chat.querySelector(".chat__messages")
+const chatInput = document.querySelector(".chat__input")
+const chatMessages = document.querySelector(".chat__messages")
 
-// ================= EMOJI ELEMENTS =================
+// ================= EMOJI =================
 const emojiButton = document.querySelector(".emoji__button")
 const emojiPanel = document.querySelector(".emoji__panel")
+const emojiList = document.querySelector(".emoji__list")
+const categoryButtons = document.querySelectorAll(".emoji__categories button")
 
-const emojis = [
-    // 😀 Carinhas
-    "😀","😁","😄","😃","😅","😂","🤣","😊","🙂","😉","😍","🥰",
-    "😘","😗","😙","😚","😋","😛","😜","🤪","😝","🫠",
-    "🤗","🤭","🤫","🤔","🫡","😐","😑","😶","🙄",
-    "😏","😒","😬","😮","😲","🥱","😴","🤤",
-    "😢","😭","😤","😠","😡","🤬","😱","😨","😰","😥",
-    "🤯","😳","🥴","😵","😵‍💫",
+const emojiCategories = {
+    faces: ["😀","😁","😂","🤣","😊","😍","😎","🤔","😐","🙄","😢","😭","😡"],
+    hearts: ["❤️","🧡","💛","💚","💙","💜","🖤","👍","👏","🙏","💪"],
+    fun: ["🎉","🎊","🥳","🎂","🍕","🍔","🍟","🍺","🎮","🎶"],
+    extras: ["🔥","✨","⭐","💯","⚡","📌","📎","📱","💻"]
+}
 
-    // ❤️ Emoções / Gestos
-    "❤️","🧡","💛","💚","💙","💜","🤎","🖤","🤍",
-    "💔","❤️‍🔥","❤️‍🩹","💖","💘","💝","💞","💕",
-    "👍","👎","👏","🙌","🫶","🤝","👊","✊","🤞",
-    "🙏","💪","🫵","👌","✌️","🤘","🤙","🖖",
+const renderEmojis = (category) => {
+    emojiList.innerHTML = ""
+    emojiCategories[category].forEach(emoji => {
+        const span = document.createElement("span")
+        span.textContent = emoji
+        span.onclick = () => {
+            chatInput.value += emoji
+            chatInput.focus()
+            emojiPanel.style.display = "none"
+        }
+        emojiList.appendChild(span)
+    })
+}
 
-    // 🎉 Diversão
-    "🎉","🎊","🥳","🎈","🎂","🍰","🍕","🍔","🍟",
-    "🍩","🍪","🍫","🍿","☕","🍺","🍻","🥂","🍷",
+// padrão
+renderEmojis("faces")
+categoryButtons[0].classList.add("active")
 
-    // 🔥 Objetos / Extras
-    "🔥","✨","⭐","🌟","💥","💯","⚡","💡","🎶","🎵",
-    "📌","📎","📝","📷","🎮","🕹","💻","📱"
-]
+categoryButtons.forEach(btn => {
+    btn.onclick = () => {
+        categoryButtons.forEach(b => b.classList.remove("active"))
+        btn.classList.add("active")
+        renderEmojis(btn.dataset.category)
+    }
+})
 
+emojiButton.onclick = () => {
+    emojiPanel.style.display =
+        emojiPanel.style.display === "flex" ? "none" : "flex"
+}
 
-// ================= USER / WEBSOCKET =================
-const colors = [
-    "cadetblue",
-    "darkgoldenrod",
-    "cornflowerblue",
-    "darkkhaki",
-    "hotpink",
-    "gold"
-]
-
+// ================= CHAT LOGIC =================
+const colors = ["cadetblue","darkgoldenrod","cornflowerblue","darkkhaki","hotpink","gold"]
 const user = { id: "", name: "", color: "" }
 let websocket
 
-// ================= EMOJI LOGIC =================
-emojiPanel.innerHTML = ""
-
-emojis.forEach(emoji => {
-    const span = document.createElement("span")
-    span.textContent = emoji
-
-    span.addEventListener("click", () => {
-        chatInput.value += emoji
-        chatInput.focus()
-        emojiPanel.style.display = "none"
-    })
-
-    emojiPanel.appendChild(span)
-})
-
-emojiButton.addEventListener("click", () => {
-    emojiPanel.style.display =
-        emojiPanel.style.display === "flex" ? "none" : "flex"
-})
-
-// Fecha painel ao enviar mensagem
-chatForm.addEventListener("submit", () => {
-    emojiPanel.style.display = "none"
-})
-
-// ================= MESSAGES =================
 const createMessageSelfElement = (content) => {
     const div = document.createElement("div")
-    div.classList.add("message--self")
+    div.className = "message--self"
     div.innerHTML = content
     return div
 }
 
-const createMessageOtherElement = (content, sender, senderColor) => {
+const createMessageOtherElement = (content, sender, color) => {
     const div = document.createElement("div")
+    div.className = "message--other"
+
     const span = document.createElement("span")
+    span.className = "message--sender"
+    span.style.color = color
+    span.textContent = sender
 
-    div.classList.add("message--other")
-
-    span.classList.add("message--sender")
-    span.style.color = senderColor
-    span.innerHTML = sender
-
-    div.appendChild(span)
+    div.append(span)
     div.innerHTML += content
-
     return div
 }
 
-const getRandomColor = () => {
-    const randomIndex = Math.floor(Math.random() * colors.length)
-    return colors[randomIndex]
-}
-
-const scrollScreen = () => {
-    window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth"
-    })
-}
-
 const processMessage = ({ data }) => {
-    const { userId, userName, userColor, content } = JSON.parse(data)
+    const msg = JSON.parse(data)
+    const el = msg.userId === user.id
+        ? createMessageSelfElement(msg.content)
+        : createMessageOtherElement(msg.content, msg.userName, msg.userColor)
 
-    const message =
-        userId === user.id
-            ? createMessageSelfElement(content)
-            : createMessageOtherElement(content, userName, userColor)
-
-    chatMessages.appendChild(message)
-    scrollScreen()
+    chatMessages.appendChild(el)
+    window.scrollTo({ top: document.body.scrollHeight })
 }
 
-// ================= LOGIN =================
-const handleLogin = (event) => {
-    event.preventDefault()
-
+// ================= LOGIN / SEND =================
+loginForm.onsubmit = (e) => {
+    e.preventDefault()
     user.id = crypto.randomUUID()
     user.name = loginInput.value
-    user.color = getRandomColor()
+    user.color = colors[Math.floor(Math.random() * colors.length)]
 
     login.style.display = "none"
     chat.style.display = "flex"
@@ -140,23 +103,17 @@ const handleLogin = (event) => {
     websocket.onmessage = processMessage
 }
 
-// ================= SEND MESSAGE =================
-const sendMessage = (event) => {
-    event.preventDefault()
-
+chatForm.onsubmit = (e) => {
+    e.preventDefault()
     if (!chatInput.value.trim()) return
 
-    const message = {
+    websocket.send(JSON.stringify({
         userId: user.id,
         userName: user.name,
         userColor: user.color,
         content: chatInput.value
-    }
+    }))
 
-    websocket.send(JSON.stringify(message))
     chatInput.value = ""
+    emojiPanel.style.display = "none"
 }
-
-// ================= EVENTS =================
-loginForm.addEventListener("submit", handleLogin)
-chatForm.addEventListener("submit", sendMessage)
