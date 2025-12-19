@@ -155,3 +155,27 @@ body {
     font-weight: 700;
     color: cadetblue;
 }
+.emoji__button {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.emoji__panel {
+    position: absolute;
+    bottom: 70px;
+    left: 20px;
+    background-color: #212121;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 220px;
+}
+
+.emoji__panel span {
+    cursor: pointer;
+    font-size: 1.4rem;
+}
