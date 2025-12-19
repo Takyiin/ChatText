@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Ícones -->
+    <!-- Google Icons -->
     <link
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0"
@@ -13,13 +13,13 @@
     <!-- CSS -->
     <link rel="stylesheet" href="./css/style.css" />
 
-    <title>Chat | Privado</title>
+    <title>Chat | Manual do Dev</title>
 </head>
 <body>
 
     <section class="container">
 
-        <!-- ===== LOGIN ===== -->
+        <!-- ================= LOGIN ================= -->
         <section class="login">
             <h2>Login</h2>
 
@@ -30,19 +30,20 @@
                     placeholder="Seu nome"
                     required
                 />
+
                 <button type="submit" class="login__button">
                     Entrar
                 </button>
             </form>
         </section>
 
-        <!-- ===== CHAT ===== -->
+        <!-- ================= CHAT ================= -->
         <section class="chat">
 
-            <!-- MENSAGENS -->
+            <!-- ===== MENSAGENS ===== -->
             <section class="chat__messages"></section>
 
-            <!-- FORMULÁRIO -->
+            <!-- ===== FORM ===== -->
             <form class="chat__form">
 
                 <!-- BOTÃO EMOJI -->
@@ -70,8 +71,21 @@
                     </span>
                 </button>
 
-                <!-- PAINEL DE EMOJIS -->
-                <div class="emoji__panel"></div>
+                <!-- ===== PAINEL DE EMOJIS ===== -->
+                <div class="emoji__panel">
+
+                    <!-- CATEGORIAS -->
+                    <div class="emoji__categories">
+                        <button data-category="faces" title="Carinhas">😀</button>
+                        <button data-category="gestures" title="Gestos">❤️</button>
+                        <button data-category="fun" title="Diversão">🎉</button>
+                        <button data-category="extras" title="Extras">🔥</button>
+                    </div>
+
+                    <!-- LISTA -->
+                    <div class="emoji__list"></div>
+
+                </div>
 
             </form>
         </section>
