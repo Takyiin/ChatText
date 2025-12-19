@@ -9,6 +9,25 @@ const chatForm = chat.querySelector(".chat__form")
 const chatInput = chat.querySelector(".chat__input")
 const chatMessages = chat.querySelector(".chat__messages")
 
+const emojiButton = document.querySelector(".emoji__button")
+const emojiPanel = document.querySelector(".emoji__panel")
+
+emojiButton.addEventListener("click", () => {
+    emojiPanel.style.display =
+        emojiPanel.style.display === "flex" ? "none" : "flex"
+})
+emojiPanel.innerHTML.split(" ").forEach(emoji => {
+    const span = document.createElement("span")
+    span.textContent = emoji
+
+    span.addEventListener("click", () => {
+        chatInput.value += emoji
+        chatInput.focus()
+    })
+
+    emojiPanel.appendChild(span)
+})
+
 const colors = [
     "cadetblue",
     "darkgoldenrod",
